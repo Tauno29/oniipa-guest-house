@@ -5,3 +5,9 @@
 - [x] Document the Netlify connection and deploy settings.
 - [x] Run typecheck and production build validation.
 - [x] Commit and push the deployment-ready changes to GitHub.
+
+## Image deployment repair
+
+- [x] Replace Manus-only storage paths with Netlify-safe bundled image paths.
+- [x] Verify every referenced image exists in the production output.
+- [x] Commit and push the image fix to GitHub.

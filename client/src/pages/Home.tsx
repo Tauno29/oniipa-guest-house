@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import { ArrowUpRight, Menu, X, MapPin, Phone, Mail, BedDouble, Wifi, CookingPot, CarFront, ChevronDown } from 'lucide-react';
 
+// Netlify-safe assets: all images are bundled under client/public/assets.
 const ASSETS = {
-  hero: '/manus-storage/oipapa-hero_6b257a24.jpg',
-  rooms: '/manus-storage/oipapa-flyer-rooms_74721411.jpeg',
-  exterior: '/manus-storage/oipapa-flyer-exterior_0e0c201c.jpeg',
-  breakfast: '/manus-storage/oipapa-breakfast_8ec0682f.jpg',
-  landscape: '/manus-storage/oipapa-landscape_b18004da.jpg',
+  hero: '/assets/oipapa-exterior.jpeg',
+  rooms: '/assets/oipapa-rooms.jpeg',
+  exterior: '/assets/oipapa-exterior.jpeg',
+  breakfast: '/assets/oipapa-rooms.jpeg',
+  landscape: '/assets/oipapa-exterior.jpeg',
 };
 const nav = [['Stay', '#stay'], ['The guesthouse', '#about'], ['Good to know', '#details'], ['Find us', '#find']];
 const amenities = [

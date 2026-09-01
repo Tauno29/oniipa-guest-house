@@ -11,3 +11,10 @@
 - [x] Replace Manus-only storage paths with Netlify-safe bundled image paths.
 - [x] Verify every referenced image exists in the production output.
 - [x] Commit and push the image fix to GitHub.
+
+## Room booking flow
+
+- [x] Add a booking request form with guest details, dates, and room preferences.
+- [x] Add a clear submitted-state confirmation for guests.
+- [x] Document the email notification setup for the guesthouse inbox.
+- [x] Validate the production build and push the booking flow to GitHub.

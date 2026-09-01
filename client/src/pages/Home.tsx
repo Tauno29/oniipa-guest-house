@@ -1,25 +1,55 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+/* Oipapa Guesthouse / Desert Editorial: real-place photography leads; doorway mark, thin rules, clay markers, and quiet direct booking. */
+import { useState } from 'react';
+import { ArrowUpRight, Menu, X, MapPin, Phone, Mail, BedDouble, Wifi, CookingPot, CarFront, ChevronDown } from 'lucide-react';
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
- */
+const ASSETS = {
+  hero: '/manus-storage/oipapa-hero_6b257a24.jpg',
+  rooms: '/manus-storage/oipapa-flyer-rooms_74721411.jpeg',
+  exterior: '/manus-storage/oipapa-flyer-exterior_0e0c201c.jpeg',
+  breakfast: '/manus-storage/oipapa-breakfast_8ec0682f.jpg',
+  landscape: '/manus-storage/oipapa-landscape_b18004da.jpg',
+};
+const nav = [['Stay', '#stay'], ['The guesthouse', '#about'], ['Good to know', '#details'], ['Find us', '#find']];
+const amenities = [
+  { icon: BedDouble, title: 'Two comfortable beds', body: 'A cool, quiet room made for an easy night.' },
+  { icon: CookingPot, title: 'Self-catering kitchen', body: 'Settle in, make breakfast, and keep your own rhythm.' },
+  { icon: Wifi, title: 'The essentials', body: 'Practical comforts for short stays and longer visits.' },
+  { icon: CarFront, title: 'Easy arrival', body: 'A calm base in Obuno, with room to come and go.' },
+];
+
+function BrandMark({ light = false }: { light?: boolean }) {
+  return <span className={`brand-mark ${light ? 'brand-mark--light' : ''}`} aria-hidden="true"><span className="brand-mark__roof" /><span className="brand-mark__stem" /><span className="brand-mark__door" /><span className="brand-mark__base" /></span>;
+}
+function Markers() { return <span className="marker-row" aria-hidden="true"><i /><i /><i /></span>; }
+
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [faq, setFaq] = useState<number | null>(null);
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
-    </div>
+    <main className="texture overflow-hidden">
+      <header className="absolute top-0 left-0 z-20 w-full text-white">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-6 lg:px-12">
+          <a href="#top" className="flex items-center gap-3" aria-label="Oipapa Guesthouse home"><BrandMark light /><span className="serif text-[1.45rem] leading-none tracking-wide">Oipapa</span></a>
+          <nav className="desktop-nav flex items-center gap-9 text-[.69rem] font-bold uppercase tracking-[.15em]">{nav.map(([label, href]) => <a key={label} href={href} className="transition-opacity hover:opacity-70">{label}</a>)}</nav>
+          <a href="tel:0813788797" className="desktop-nav border border-white/70 px-5 py-3 text-[.68rem] font-bold uppercase tracking-[.15em] transition hover:bg-white hover:text-[#2b1e18]">Book your stay <ArrowUpRight className="ml-2 inline h-3.5 w-3.5" /></a>
+          <button className="hidden rounded-full border border-white/70 p-2 max-[760px]:block" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X size={18} /> : <Menu size={18} />}</button>
+        </div>
+        {menuOpen && <div className="mx-4 border border-white/30 bg-[#2b1e18]/95 p-6 backdrop-blur-md max-[760px]:block"><div className="flex flex-col gap-5 text-sm uppercase tracking-[.12em]">{nav.map(([label, href]) => <a key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<a href="tel:0813788797" className="border-t border-white/20 pt-5">Call to book</a></div></div>}
+      </header>
+
+      <section id="top" className="relative flex min-h-[760px] items-end bg-[#554138] text-white lg:min-h-[820px]"><img src={ASSETS.hero} alt="Oipapa Guesthouse exterior at golden hour" className="absolute inset-0 h-full w-full object-cover object-center" /><div className="absolute inset-0 bg-gradient-to-r from-[#2b1e18]/80 via-[#2b1e18]/35 to-transparent" /><div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-20 lg:px-12 lg:pb-28"><div className="max-w-[720px] reveal"><p className="eyebrow mb-5 text-[#f0d4bd]">Obuno · Northern Namibia</p><h1 className="serif max-w-[760px] text-[clamp(4.2rem,10vw,9.5rem)] leading-[.8] tracking-[-.045em]">A quiet place<br /><em>to land.</em></h1><div className="mt-10 flex flex-col gap-6 border-l border-[#f0d4bd]/70 pl-5 sm:flex-row sm:items-start sm:gap-12"><p className="max-w-[290px] text-sm leading-6 text-white/85">Clean, comfortable self-catering rooms in the open calm of northern Namibia.</p><a href="#stay" className="group text-[.7rem] font-bold uppercase tracking-[.15em]">Explore the stay <ArrowUpRight className="ml-2 inline h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></a></div></div></div><div className="absolute bottom-6 right-6 z-10 flex items-center gap-3 text-[.62rem] uppercase tracking-[.15em] text-white/70 lg:right-12"><span className="h-px w-12 bg-white/50" />Self-catering guesthouse</div></section>
+
+      <section id="stay" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36"><div className="grid gap-16 lg:grid-cols-[.7fr_1.3fr] lg:items-start"><div><p className="eyebrow text-[#b98568]">01 / The stay</p><Markers /><h2 className="serif mt-5 max-w-[430px] text-6xl leading-[.92] tracking-[-.04em] lg:text-8xl">Come for the quiet.</h2><p className="mt-7 max-w-[300px] text-sm leading-6 text-[#75665c]">A simple, considered room to return to after a day on the road. No fuss. Just the essentials, kept well.</p></div><div className="grid gap-5 sm:grid-cols-[1.12fr_.88fr] sm:items-end"><div className="group overflow-hidden bg-[#e6d8cb]"><img src={ASSETS.breakfast} alt="Simple breakfast set for a self-catering stay" className="h-[460px] w-full object-cover object-center transition duration-500 group-hover:scale-[1.025]" /></div><div className="space-y-5"><div className="archive-frame overflow-hidden"><img src={ASSETS.rooms} alt="Archival guesthouse room flyer" className="h-[260px] w-full object-cover object-top opacity-90" /></div><div className="flex items-end justify-between border-t border-[#d8c8b9] pt-4"><div><p className="eyebrow text-[#75665c]">From</p><p className="serif mt-1 text-4xl">N$350 <span className="font-sans text-sm text-[#75665c]">per night</span></p></div><p className="max-w-[100px] text-right text-[.63rem] uppercase leading-4 tracking-[.12em] text-[#75665c]">Original guesthouse flyer / archive</p></div></div></div></div></section>
+
+      <section id="about" className="bg-[#2b1e18] text-[#fbf8f2]"><div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[.86fr_1.14fr] lg:gap-24 lg:px-12 lg:py-32"><div className="relative min-h-[520px]"><img src={ASSETS.landscape} alt="Quiet road in northern Namibia" className="absolute left-0 top-0 h-[430px] w-[78%] object-cover object-center" /><img src={ASSETS.exterior} alt="Archival Oipapa Guesthouse exterior flyer" className="absolute bottom-0 right-0 h-[210px] w-[55%] border-[10px] border-[#2b1e18] object-cover object-top" /><span className="absolute bottom-5 left-0 text-[.62rem] uppercase tracking-[.15em] text-[#c8b5a7]">A slower kind of arrival</span></div><div className="flex flex-col justify-center"><p className="eyebrow text-[#d1a487]">02 / The guesthouse</p><Markers /><h2 className="serif mt-5 max-w-[600px] text-6xl leading-[.92] tracking-[-.04em] lg:text-8xl">Stay a while.<br /><em>Make it yours.</em></h2><p className="mt-8 max-w-[475px] text-[1rem] leading-7 text-[#d8c9bd]">Oipapa is a small, welcoming base in Obuno. The rooms are clean, the kitchen is ready, and the surrounding landscape gives you space to breathe.</p><a href="mailto:oipapa2016@gmail.com" className="mt-10 w-fit border-b border-[#d1a487] pb-2 text-[.7rem] font-bold uppercase tracking-[.15em] text-[#f0d4bd] transition hover:text-white">Ask about your dates <ArrowUpRight className="ml-2 inline h-4 w-4" /></a></div></div></section>
+
+      <section className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-32"><div className="flex flex-col justify-between gap-8 border-b border-[#d8c8b9] pb-10 sm:flex-row sm:items-end"><div><p className="eyebrow text-[#b98568]">03 / Good to know</p><Markers /><h2 className="serif mt-4 text-6xl leading-[.9] tracking-[-.04em] lg:text-7xl">The essentials,<br /><em>covered.</em></h2></div><p className="max-w-[240px] text-sm leading-6 text-[#75665c]">Everything you need for a comfortable, independent stay.</p></div><div className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{amenities.map(({ icon: Icon, title, body }, i) => <div key={title} className="border-b border-[#d8c8b9] py-8 lg:border-b-0 lg:border-r lg:pr-8"><span className="mb-9 flex h-11 w-11 items-center justify-center rounded-full border border-[#b98568] text-[#b98568]"><Icon size={19} strokeWidth={1.5} /></span><p className="eyebrow text-[#75665c]">0{i + 1}</p><h3 className="serif mt-3 text-3xl leading-none">{title}</h3><p className="mt-3 text-sm leading-6 text-[#75665c]">{body}</p></div>)}</div></section>
+
+      <section id="details" className="bg-[#e7dbcf]"><div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-20 lg:grid-cols-[.9fr_1.1fr] lg:px-12 lg:py-28"><div><p className="eyebrow text-[#b98568]">Before you arrive</p><Markers /><h2 className="serif mt-4 max-w-[450px] text-6xl leading-[.9] tracking-[-.04em] lg:text-7xl">A few useful<br /><em>things to know.</em></h2></div><div className="divide-y divide-[#cdbbae]">{['Where are you located?', 'How do I book?', 'What does self-catering mean here?'].map((q, i) => <div key={q}><button className="flex w-full items-center justify-between py-5 text-left" onClick={() => setFaq(faq === i ? null : i)}><span className="serif text-3xl">{q}</span><ChevronDown size={19} className={`text-[#b98568] transition-transform ${faq === i ? 'rotate-180' : ''}`} /></button>{faq === i && <p className="max-w-[580px] pb-6 text-sm leading-6 text-[#75665c]">{i === 0 ? 'We are in Obuno, in northern Namibia — a calm, practical base for travelers passing through or taking their time.' : i === 1 ? 'Call 0813788797 or email oipapa2016@gmail.com with your dates. We will confirm availability directly.' : 'You have the privacy and flexibility to prepare your own meals in the guesthouse kitchen, with the room and essentials ready for you.'}</p>}</div>)}</div></div></section>
+
+      <section id="find" className="border-t border-[#d8c8b9] bg-[#f4eee5] text-[#2b1e18]"><div className="mx-auto grid max-w-[1440px] gap-14 px-6 py-24 lg:grid-cols-[1fr_.8fr] lg:items-end lg:px-12 lg:py-32"><div><p className="eyebrow text-[#b98568]">04 / Find us</p><Markers /><h2 className="serif mt-5 max-w-[700px] text-[clamp(4rem,8vw,8rem)] leading-[.8] tracking-[-.045em]">Call ahead,<br /><em>arrive easy.</em></h2></div><div className="border-l border-[#d8c8b9] pl-6"><div className="flex items-start gap-4"><MapPin size={18} className="mt-1 text-[#b98568]" /><p className="text-sm leading-6">Obuno<br />Northern Namibia</p></div><div className="mt-7 flex items-start gap-4"><Phone size={18} className="mt-1 text-[#b98568]" /><a href="tel:0813788797" className="text-sm leading-6 underline decoration-[#b98568]/40 underline-offset-4">081 378 8797</a></div><div className="mt-7 flex items-start gap-4"><Mail size={18} className="mt-1 text-[#b98568]" /><a href="mailto:oipapa2016@gmail.com" className="text-sm leading-6 underline decoration-[#b98568]/40 underline-offset-4">oipapa2016@gmail.com</a></div><a href="tel:0813788797" className="mt-10 inline-flex items-center bg-[#2b1e18] px-6 py-4 text-[.7rem] font-bold uppercase tracking-[.14em] text-[#fbf8f2] transition hover:bg-[#49342b]">Book your stay <ArrowUpRight className="ml-3 h-4 w-4" /></a></div></div></section>
+
+      <footer className="bg-[#2b1e18] px-6 py-8 text-[#cdbbae] lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-5 text-[.67rem] uppercase tracking-[.14em] sm:flex-row"><p>© {new Date().getFullYear()} Oipapa Guesthouse</p><p>Obuno · Northern Namibia</p><a href="#top" className="text-[#f0d4bd]">Back to top ↑</a></div></footer>
+    </main>
   );
 }

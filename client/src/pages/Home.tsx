@@ -105,6 +105,7 @@ export default function Home() {
           <a href="#top" className="flex items-center gap-3" aria-label="Oipapa Guesthouse home"><BrandMark light /><span className="serif text-[1.45rem] leading-none tracking-wide">Oipapa</span></a>
           <nav className="desktop-nav flex items-center gap-9 text-[.69rem] font-bold uppercase tracking-[.15em]">{nav.map(([label, href]) => <a key={label} href={href} className="transition-opacity hover:opacity-70">{label}</a>)}</nav>
           <a href="#booking" className="desktop-nav border border-white/70 px-5 py-3 text-[.68rem] font-bold uppercase tracking-[.15em] transition hover:bg-white hover:text-[#2b1e18]">Book your stay <ArrowUpRight className="ml-2 inline h-3.5 w-3.5" /></a>
+          <a href="#booking" className="mobile-booking-cta" aria-label="Book your stay">Book your stay <ArrowUpRight className="ml-1 h-3.5 w-3.5" /></a>
           <button className="hidden rounded-full border border-white/70 p-2 max-[760px]:block" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X size={18} /> : <Menu size={18} />}</button>
         </div>
         {menuOpen && <div className="mx-4 border border-white/30 bg-[#2b1e18]/95 p-6 backdrop-blur-md max-[760px]:block"><div className="flex flex-col gap-5 text-sm uppercase tracking-[.12em]">{nav.map(([label, href]) => <a key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<a href="tel:0813788797" className="border-t border-white/20 pt-5">Call to book</a></div></div>}

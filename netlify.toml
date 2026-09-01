@@ -1,0 +1,10 @@
+# Oipapa Guesthouse / Netlify deployment configuration.
+# The Vite client is emitted to dist/public by the project build script.
+[build]
+  command = "pnpm build"
+  publish = "dist/public"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

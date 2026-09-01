@@ -1,5 +1,5 @@
 /* Oipapa Guesthouse / Desert Editorial: real-place photography leads; doorway mark, thin rules, clay markers, and quiet direct booking. */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Menu, X, MapPin, Phone, Mail, BedDouble, Wifi, CookingPot, CarFront, ChevronDown } from 'lucide-react';
 
 // Netlify-safe assets: all images are bundled under client/public/assets.
@@ -18,6 +18,44 @@ const amenities = [
   { icon: CarFront, title: 'Easy arrival', body: 'A calm base in Onuno , helao nafidi, with room to come and go.' },
 ];
 
+type GalleryCategory = 'kitchen' | 'rooms';
+type GalleryMedia = {
+  type: 'image' | 'video';
+  src: string;
+  alt: string;
+  label: string;
+  poster?: string;
+};
+
+const galleryMedia: Record<GalleryCategory, GalleryMedia[]> = {
+  kitchen: [
+    { type: 'image', src: '/assets/gallery-kitchen-1.jpeg', alt: 'Kitchen cabinets, countertop, sink, and cooking area', label: 'Kitchen / 01' },
+    { type: 'image', src: '/assets/gallery-kitchen-2.jpeg', alt: 'Kitchen view with cabinets and seating area', label: 'Kitchen / 02' },
+    { type: 'video', src: '/assets/gallery-kitchen-video.mp4', poster: '/assets/gallery-kitchen-1.jpeg', alt: 'Video tour of the kitchen and sitting area', label: 'Kitchen / Moving view' },
+  ],
+  rooms: [
+    { type: 'image', src: '/assets/gallery-rooms-bedroom-1.jpeg', alt: 'Guesthouse bedroom with a neatly made bed', label: 'Rooms / 01' },
+    { type: 'image', src: '/assets/gallery-rooms-living.jpeg', alt: 'Guesthouse living and sitting area', label: 'Rooms / 02' },
+    { type: 'video', src: '/assets/gallery-rooms-video-1.mp4', poster: '/assets/gallery-rooms-bedroom-1.jpeg', alt: 'Video view of the guesthouse bedroom', label: 'Rooms / Moving view 01' },
+    { type: 'image', src: '/assets/gallery-rooms-shower-1.jpeg', alt: 'Guesthouse shower with a window', label: 'Rooms / 03' },
+    { type: 'image', src: '/assets/gallery-rooms-bedroom-2.jpeg', alt: 'Second view of a guesthouse bedroom', label: 'Rooms / 04' },
+    { type: 'video', src: '/assets/gallery-rooms-video-2.mp4', poster: '/assets/gallery-rooms-bedroom-2.jpeg', alt: 'Vertical video view of a guesthouse bedroom', label: 'Rooms / Moving view 02' },
+    { type: 'image', src: '/assets/gallery-rooms-bathroom.jpeg', alt: 'Guesthouse bathroom sink and mirror', label: 'Rooms / 05' },
+    { type: 'image', src: '/assets/gallery-rooms-shower-2.jpeg', alt: 'Guesthouse shower interior', label: 'Rooms / 06' },
+    { type: 'video', src: '/assets/gallery-rooms-video-3.mp4', poster: '/assets/gallery-rooms-bedroom-1.jpeg', alt: 'Video view of the guesthouse bedroom', label: 'Rooms / Moving view 03' },
+    { type: 'image', src: '/assets/gallery-rooms-shower-3.jpeg', alt: 'Guesthouse shower and tiled bathroom', label: 'Rooms / 07' },
+    { type: 'video', src: '/assets/gallery-rooms-video-4.mp4', poster: '/assets/gallery-rooms-living.jpeg', alt: 'Video view of the guesthouse interior', label: 'Rooms / Moving view 04' },
+    { type: 'video', src: '/assets/gallery-rooms-video-5.mp4', poster: '/assets/gallery-rooms-living.jpeg', alt: 'Video view of the guesthouse sitting area', label: 'Rooms / Moving view 05' },
+  ],
+};
+
+function GalleryTile({ item, index, onOpen }: { item: GalleryMedia; index: number; onOpen: (index: number) => void }) {
+  return <button type="button" className="gallery-tile group relative block w-full overflow-hidden text-left" onClick={() => onOpen(index)} aria-label={`Open ${item.label}`}>
+    {item.type === 'image' ? <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]" /> : <><video src={item.src} poster={item.poster} muted playsInline preload="none" className="pointer-events-none h-full w-full object-cover" /><span className="gallery-play" aria-hidden="true"><span /></span></>}
+    <span className="gallery-tile__caption">{item.label}</span>
+  </button>;
+}
+
 function BrandMark({ light = false }: { light?: boolean }) {
   return <span className={`brand-mark ${light ? 'brand-mark--light' : ''}`} aria-hidden="true"><span className="brand-mark__roof" /><span className="brand-mark__stem" /><span className="brand-mark__door" /><span className="brand-mark__base" /></span>;
 }
@@ -27,6 +65,25 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [faq, setFaq] = useState<number | null>(null);
   const [bookingStatus, setBookingStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [galleryCategory, setGalleryCategory] = useState<GalleryCategory>('kitchen');
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  const activeGallery = galleryMedia[galleryCategory];
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (viewerIndex === null) return;
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setViewerIndex(null);
+      if (event.key === 'ArrowRight') setViewerIndex((current) => current === null ? null : (current + 1) % activeGallery.length);
+      if (event.key === 'ArrowLeft') setViewerIndex((current) => current === null ? null : (current - 1 + activeGallery.length) % activeGallery.length);
+    }
+    document.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [viewerIndex, activeGallery.length]);
 
   async function submitBooking(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,7 +112,7 @@ export default function Home() {
 
       <section id="top" className="relative flex min-h-[760px] items-end bg-[#554138] text-white lg:min-h-[820px]"><img src={ASSETS.hero} alt="Oipapa Guesthouse rooms and self-catering kitchen" className="absolute inset-0 h-full w-full object-cover object-center" /><div className="absolute inset-0 bg-gradient-to-r from-[#2b1e18]/80 via-[#2b1e18]/35 to-transparent" /><div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-20 lg:px-12 lg:pb-28"><div className="max-w-[720px] reveal"><p className="eyebrow mb-5 text-[#f0d4bd]">Onuno , helao nafidi</p><h1 className="serif max-w-[760px] text-[clamp(4.2rem,10vw,9.5rem)] leading-[.8] tracking-[-.045em]">A quiet place<br /><em>to land.</em></h1><div className="mt-10 flex flex-col gap-6 border-l border-[#f0d4bd]/70 pl-5 sm:flex-row sm:items-start sm:gap-12"><p className="max-w-[290px] text-sm leading-6 text-white/85">Clean, comfortable self-catering rooms in the open calm of Onuno , helao nafidi.</p><a href="#stay" className="group text-[.7rem] font-bold uppercase tracking-[.15em]">Explore the stay <ArrowUpRight className="ml-2 inline h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></a></div></div></div><div className="absolute bottom-6 right-6 z-10 flex items-center gap-3 text-[.62rem] uppercase tracking-[.15em] text-white/70 lg:right-12"><span className="h-px w-12 bg-white/50" />Self-catering guesthouse</div></section>
 
-      <section id="stay" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36"><div className="grid gap-16 lg:grid-cols-[.7fr_1.3fr] lg:items-start"><div><p className="eyebrow text-[#b98568]">01 / The stay</p><Markers /><h2 className="serif mt-5 max-w-[430px] text-6xl leading-[.92] tracking-[-.04em] lg:text-8xl">Come for the quiet.</h2><p className="mt-7 max-w-[300px] text-sm leading-6 text-[#75665c]">A simple, considered room to return to after a day on the road. No fuss. Just the essentials, kept well.</p></div><div className="grid gap-5 sm:grid-cols-[1.12fr_.88fr] sm:items-end"><div className="group overflow-hidden bg-[#e6d8cb]"><img src={ASSETS.breakfast} alt="Simple breakfast set for a self-catering stay" className="h-[460px] w-full object-cover object-center transition duration-500 group-hover:scale-[1.025]" /></div><div className="space-y-5"><div className="archive-frame overflow-hidden"><img src={ASSETS.rooms} alt="Archival guesthouse room flyer" className="h-[260px] w-full object-cover object-top opacity-90" /></div><div className="flex items-end justify-between border-t border-[#d8c8b9] pt-4"><div><p className="eyebrow text-[#75665c]">From</p><p className="serif mt-1 text-4xl">N$350 <span className="font-sans text-sm text-[#75665c]">per night</span></p></div><p className="max-w-[100px] text-right text-[.63rem] uppercase leading-4 tracking-[.12em] text-[#75665c]">Original guesthouse flyer / archive</p></div></div></div></div></section>
+      <section id="stay" className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36"><div className="border-b border-[#d8c8b9] pb-10"><div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><p className="eyebrow text-[#b98568]">01 / Selective gallery</p><Markers /><h2 className="serif mt-5 max-w-[650px] text-6xl leading-[.88] tracking-[-.045em] lg:text-8xl">Explore<br /><em>the stay.</em></h2></div><p className="max-w-[330px] text-sm leading-6 text-[#75665c]">Take a closer look at the spaces waiting for you at OIPAPA Guesthouse.</p></div><div className="mt-12 flex flex-col gap-5 border-t border-[#d8c8b9] pt-5 sm:flex-row sm:items-center sm:justify-between"><p className="eyebrow text-[#75665c]">Explore the space</p><div className="flex items-center gap-8" role="tablist" aria-label="Choose a gallery category">{(['kitchen', 'rooms'] as GalleryCategory[]).map((category, index) => <button key={category} type="button" role="tab" aria-selected={galleryCategory === category} className={`gallery-tab ${galleryCategory === category ? 'gallery-tab--active' : ''}`} onClick={() => { setGalleryCategory(category); setViewerIndex(null); }}><span>0{index + 1}</span> {category}</button>)}</div></div></div><div key={galleryCategory} className="gallery-grid mt-12 transition-opacity duration-500"><div className="gallery-grid__feature"><GalleryTile item={activeGallery[0]} index={0} onOpen={setViewerIndex} /></div><div className="gallery-grid__support"><GalleryTile item={activeGallery[1]} index={1} onOpen={setViewerIndex} /></div>{activeGallery.slice(2).map((item, index) => <div key={item.src} className={`gallery-grid__item gallery-grid__item--${index % 3}`}><GalleryTile item={item} index={index + 2} onOpen={setViewerIndex} /></div>)}</div>{viewerIndex !== null && <div className="gallery-viewer" role="dialog" aria-modal="true" aria-label={`${galleryCategory} gallery viewer`} onClick={() => setViewerIndex(null)} onTouchStart={(event) => { touchStartX.current = event.changedTouches[0]?.clientX ?? null; }} onTouchEnd={(event) => { const start = touchStartX.current; const end = event.changedTouches[0]?.clientX; touchStartX.current = null; if (start === null || end === undefined || Math.abs(end - start) < 45) return; setViewerIndex((current) => current === null ? null : end < start ? (current + 1) % activeGallery.length : (current - 1 + activeGallery.length) % activeGallery.length); }}><div className="gallery-viewer__inner" onClick={(event) => event.stopPropagation()}><button type="button" className="gallery-viewer__close" onClick={() => setViewerIndex(null)} aria-label="Close gallery">×</button><button type="button" className="gallery-viewer__prev" onClick={() => setViewerIndex((viewerIndex - 1 + activeGallery.length) % activeGallery.length)} aria-label="Previous media">←</button><div className="gallery-viewer__media">{activeGallery[viewerIndex].type === 'image' ? <img src={activeGallery[viewerIndex].src} alt={activeGallery[viewerIndex].alt} /> : <video src={activeGallery[viewerIndex].src} controls playsInline preload="metadata" poster={activeGallery[viewerIndex].poster} />}</div><button type="button" className="gallery-viewer__next" onClick={() => setViewerIndex((viewerIndex + 1) % activeGallery.length)} aria-label="Next media">→</button><p className="gallery-viewer__label">{activeGallery[viewerIndex].label} <span> / {viewerIndex + 1} of {activeGallery.length}</span></p></div></div>}</section>
 
       <section id="about" className="bg-[#2b1e18] text-[#fbf8f2]"><div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[.86fr_1.14fr] lg:gap-24 lg:px-12 lg:py-32"><div className="relative min-h-[520px]"><img src={ASSETS.landscape} alt="Quiet road in Onuno , helao nafidi" className="absolute left-0 top-0 h-[430px] w-[78%] object-cover object-center" /><img src={ASSETS.exterior} alt="Archival Oipapa Guesthouse exterior flyer" className="absolute bottom-0 right-0 h-[210px] w-[55%] border-[10px] border-[#2b1e18] object-cover object-top" /><span className="absolute bottom-5 left-0 text-[.62rem] uppercase tracking-[.15em] text-[#c8b5a7]">A slower kind of arrival</span></div><div className="flex flex-col justify-center"><p className="eyebrow text-[#d1a487]">02 / The guesthouse</p><Markers /><h2 className="serif mt-5 max-w-[600px] text-6xl leading-[.92] tracking-[-.04em] lg:text-8xl">Stay a while.<br /><em>Make it yours.</em></h2><p className="mt-8 max-w-[475px] text-[1rem] leading-7 text-[#d8c9bd]">Oipapa is a small, welcoming base in Onuno , helao nafidi. The rooms are clean, the kitchen is ready, and the surrounding landscape gives you space to breathe.</p><a href="mailto:oipapa2016@gmail.com" className="mt-10 w-fit border-b border-[#d1a487] pb-2 text-[.7rem] font-bold uppercase tracking-[.15em] text-[#f0d4bd] transition hover:text-white">Ask about your dates <ArrowUpRight className="ml-2 inline h-4 w-4" /></a></div></div></section>
 

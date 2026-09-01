@@ -45,6 +45,10 @@ a { color: inherit; text-decoration: none; }
 .form-input { width: 100%; border: 1px solid #cdbbae; border-radius: 0; background: #f4eee5; padding: .82rem .9rem; color: #2b1e18; font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 400; letter-spacing: 0; outline: none; transition: border-color .18s var(--ease-out), box-shadow .18s var(--ease-out); }
 .form-input:focus { border-color: #b98568; box-shadow: 0 0 0 3px rgba(185,133,104,.16); }
 .form-input::placeholder { color: #9a897c; }
+.booking-cta { color: #fbf8f2 !important; background: #2b1e18 !important; border: 1px solid #2b1e18; text-shadow: none; }
+.booking-cta:hover, .booking-cta:focus-visible { color: #2b1e18 !important; background: #f4eee5 !important; border-color: #2b1e18; }
+.booking-cta:focus-visible { outline: 3px solid rgba(185,133,104,.55); outline-offset: 3px; }
+
 
 .texture { position: relative; }
 .texture::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .15; mix-blend-mode: multiply; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"); }

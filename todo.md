@@ -18,3 +18,8 @@
 - [x] Add a clear submitted-state confirmation for guests.
 - [x] Document the email notification setup for the guesthouse inbox.
 - [x] Validate the production build and push the booking flow to GitHub.
+
+## Booking button contrast repair
+
+- [x] Increase the “Book your stay” button text contrast in the contact section.
+- [x] Validate the updated styling and push the fix to GitHub.

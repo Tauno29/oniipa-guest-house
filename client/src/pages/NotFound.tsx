@@ -1,10 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Home } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function NotFound() {
   const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    const description = document.querySelector('meta[name="description"]');
+    const robots = document.querySelector('meta[name="robots"]');
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const previous = {
+      title: document.title,
+      description: description?.getAttribute('content'),
+      robots: robots?.getAttribute('content'),
+      canonical: canonical?.getAttribute('href'),
+    };
+    document.title = 'Page not found | Oipapa Guesthouse';
+    description?.setAttribute('content', 'The requested Oipapa Guesthouse page could not be found.');
+    robots?.setAttribute('content', 'noindex, nofollow');
+    canonical?.setAttribute('href', 'https://oipapaguesthouse.netlify.app/404');
+    return () => {
+      document.title = previous.title;
+      if (description && previous.description) description.setAttribute('content', previous.description);
+      if (robots && previous.robots) robots.setAttribute('content', previous.robots);
+      if (canonical && previous.canonical) canonical.setAttribute('href', previous.canonical);
+    };
+  }, []);
 
   const handleGoHome = () => {
     setLocation("/");
